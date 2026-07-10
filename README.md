@@ -104,6 +104,7 @@ ROP = (mean_demand x L) + SS
 | Intermittent | Croston's SBA | 4,086 | 4,100 | 0.3% (within noise - see notes) |
 | Lumpy | Safety stock buffer | --- | --- | Policy layer |
 
+- The tuned model ended up slightly wose than the default model on RMSE and slightly better on MAE. There is a negligible difference and the default model has less bias. - Optuna tuning did not produce a meaningful improvement over default parameters, consistent with LightGBM's well-calibrated defaults on tabular data.
 - Test performance nearly identical to CV performance. The model generalized cleanly on unseen data.
 - The gap between CV and test is less than 2% on MAE for both segments, which means the CV results were not optimistic.
 - Croston's test MAE (4,100) is slightly worse than CV MAE (3,685) - a 11% degradation. This is expected because Croston's produces a static forecast. The further you get from the training window, the less relevant the smoothed estimate becomes. It still beats the baseline.
@@ -142,7 +143,6 @@ manufacturing-demand-forecast/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml               # GitHub Actions CI workflow
-├── assumption_log.md            # Documented modeling assumptions
 └── requirements.txt
 ```
 
