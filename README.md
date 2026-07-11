@@ -120,6 +120,10 @@ ROP = (mean_demand x L) + SS
 - The two moving together confirms the causal story: the inputs changed, which caused the outputs to degrade.
 - In a production context this would trigger an investigation into what caused the January 2017 demand surge. Was it a one-time event or does the model need to be retrained?
 
+![Monitoring Dashboard](images/dashboard.png)  
+*The January 2017 spike in both Rolling MAE and Mean Demand Lag confirms input drift as the cause of performance degradation - a retraining trigger in a production system.*
+
+
 ## Project Structure
 
 ```
