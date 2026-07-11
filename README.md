@@ -112,6 +112,8 @@ ROP = (mean_demand x L) + SS
 - Croston's marginal improvement on the test set is within noise given the small intermittent sample size. CV showed a more meaningful 9.8% improvement. The methodological justification holds regardless of this specific test window result.
 - The safety stock buffer covers 1,315 lumpy product × warehouse combinations with a mean safety stock of 10,658 units and mean reorder point of 14,940 units.
 
+![Feature Importance](images/feature_importance.png)
+
 ### Monitoring Signals
 
 - All months of held-out test data were within thresholds except the last month of predictions had a major spike in rolling mean MAE and 1-month mean demand lag.
