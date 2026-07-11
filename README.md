@@ -113,7 +113,7 @@ ROP = (mean_demand x L) + SS
 - The safety stock buffer covers 1,315 lumpy product × warehouse combinations with a mean safety stock of 10,658 units and mean reorder point of 14,940 units.
 
 ![Feature Importance](images/feature_importance.png)
-*The rolling window 3-month mean demand (also the baseline) is the strongest feature by far. It is more beneficial to know what the average demand has been over the past three months than what has more recently occured.
+*The rolling window 3-month mean demand (also the baseline) is the strongest feature by far. It is more beneficial to know what the average demand has been over the past three months than what has more recently occured.*
 
 ### Monitoring Signals
 
