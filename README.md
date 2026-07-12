@@ -1,6 +1,6 @@
 ## Overview
 
-An end-to-end manufacturing demand forecasting pipeline that translates SKU-level order demand predictions into inventory policy recommendations, packaged as a FastAPI service with SQLite logging, drift monitoring, and a GitHub Actions CI pipeline.
+An end-to-end manufacturing demand forecasting pipeline that translates SKU-level order demand predictions into inventory policy recommendations, packaged as a FastAPI service deployed to Google Cloud Run (https://manufacturing-demand-forecast-774035091469.us-central1.run.app), with SQLite prediction logging, drift monitoring, and a GitHub Actions CI pipeline.
 
 The demand types are classified by Syntetos-Boylan demand segmentation and routed to different forecasting methods by demand segment:
 - Smooth and erratic demand: LightGBM with Optuna tuning
@@ -85,13 +85,15 @@ ROP = (mean_demand x L) + SS
 
 ### Production Packaging
 
-- A FastAPI scoring endpoint running locally
+- FastAPI scoring endpoint deployed to **Google Cloud Run**
+- Live API: https://manufacturing-demand-forecast-774035091469.us-central1.run.app
+- `/health` - service health check
+- `/predict` - accepts `product_code` and `warehouse`, returns forecast and inventory policy
 - SQLite prediction logging
-- A simulated production replay using held-out test data
-- A Streamlit monitoring dashboard
-- Rolling MAE and input drift signals
-- GitHub Actions CI with unit tests
-- **Known limitations:** Local deployment only, no authentication, not load tested, single instance
+- Streamlit monitoring dashboard
+- Rolling MAE and input drift signals - detected 10x MAE spike from January 2017 data drift
+- GitHub Actions CI with pytest unit tests
+- **Known limitations:** No authentication, not load tested, single instance
 
 ## Results
 
@@ -151,7 +153,10 @@ manufacturing-demand-forecast/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml               # GitHub Actions CI workflow
+├── Dockerfile                   # Container definition for Cloud Run deployment
+├── .dockerignore                # Excludes venv, notebooks, checkpoints from image
 └── requirements.txt
+
 ```
 
 ## Known Limitations
@@ -168,7 +173,7 @@ manufacturing-demand-forecast/
 - No retraining cadence. Model trained once, January 2017 drift spike shows retraining is needed
 
 ### Production Limitations
-- Local deployment only. No cloud hosting, no live URL
-- No authentication
-- Single instance. Not load tested
+- No authentication on the live API endpoint, publicly accessible
+- Not load tested - single instance, suitable for portfolio traffic only
+- SQLite logging is local to the container, predictions are not persisted across Cloud Run restarts
 - Croston's forecasts are pre-computed offline. Not real-time inference
