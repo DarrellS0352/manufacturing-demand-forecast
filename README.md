@@ -1,6 +1,7 @@
 ## Overview
 
-An end-to-end manufacturing demand forecasting pipeline that translates SKU-level order demand predictions into inventory policy recommendations, packaged as a FastAPI service deployed to Google Cloud Run (https://manufacturing-demand-forecast-774035091469.us-central1.run.app), with SQLite prediction logging, drift monitoring, and a GitHub Actions CI pipeline.
+An end-to-end manufacturing demand forecasting pipeline that translates SKU-level order demand predictions into inventory policy recommendations, deployed to Google Cloud Run (https://manufacturing-demand-forecast-774035091469.us-central1.run.app) via Docker with a scheduled Airflow retraining DAG, SQLite prediction logging, drift monitoring, and a GitHub Actions CI pipeline.
+
 
 The demand types are classified by Syntetos-Boylan demand segmentation and routed to different forecasting methods by demand segment:
 - Smooth and erratic demand: LightGBM with Optuna tuning
@@ -116,7 +117,7 @@ ROP = (mean_demand x L) + SS
 - The safety stock buffer covers 1,315 lumpy product × warehouse combinations with a mean safety stock of 10,658 units and mean reorder point of 14,940 units.
 
 ![Feature Importance](images/feature_importance.png)  
-*The rolling window 3-month mean demand (also the baseline) is the strongest feature by far. It is more beneficial to know what the average demand has been over the past three months than what has more recently occured.*
+*The rolling window 3-month mean demand (also the baseline) is the strongest feature by far. It is more beneficial to know what the average demand has been over the past three months than what has more recently occurred.*
 
 ### Monitoring Signals
 
@@ -174,7 +175,6 @@ manufacturing-demand-forecast/
 - Normal distribution assumed for safety stock formula. Likely violated for erratic and lumpy segments
 - Syntetos-Boylan thresholds not tuned. Standard published values used, no dataset-specific optimization
 - Single global model across all warehouses. `Whse_J` dominates volume and may warrant its own model
-- Airflow DAG defines monthly retraining cadence but is not running on a live Airflow instance
 
 ### Production Limitations
 - No authentication on the live API endpoint, publicly accessible
