@@ -93,6 +93,7 @@ ROP = (mean_demand x L) + SS
 - Streamlit monitoring dashboard
 - Rolling MAE and input drift signals - detected 10x MAE spike from January 2017 data drift
 - GitHub Actions CI with pytest unit tests
+- Airflow DAG for scheduled monthly retraining with conditional Google Cloud Run deployment
 - **Known limitations:** No authentication, not load tested, single instance
 
 ## Results
@@ -106,7 +107,7 @@ ROP = (mean_demand x L) + SS
 | Intermittent | Croston's SBA | 4,086 | 4,100 | 0.3% (within noise - see notes) |
 | Lumpy | Safety stock buffer | --- | --- | Policy layer |
 
-- The tuned model ended up slightly wose than the default model on RMSE and slightly better on MAE. There is a negligible difference and the default model has less bias
+- The tuned model ended up slightly worse than the default model on RMSE and slightly better on MAE. There is a negligible difference and the default model has less bias
 - Optuna tuning did not produce a meaningful improvement over default parameters, consistent with LightGBM's well-calibrated defaults on tabular data.
 - Test performance nearly identical to CV performance. The model generalized cleanly on unseen data.
 - The gap between CV and test is less than 2% on MAE for both segments, which means the CV results were not optimistic.
@@ -138,6 +139,7 @@ manufacturing-demand-forecast/
 ├── src/
 │   ├── predict.py               # Demand routing and prediction logic
 │   ├── monitor.py               # SQLite logging and monitoring signals
+│   ├── train.py                 # LightGBM retraining pipeline
 │   └── simulate.py              # Test set production replay
 ├── dashboard/
 │   └── app.py                   # Streamlit monitoring dashboard
@@ -155,6 +157,8 @@ manufacturing-demand-forecast/
 │       └── ci.yml               # GitHub Actions CI workflow
 ├── Dockerfile                   # Container definition for Cloud Run deployment
 ├── .dockerignore                # Excludes venv, notebooks, checkpoints from image
+├── dags/
+│   └── retrain_dag.py           # Airflow DAG: monthly retrain → evaluate → deploy
 └── requirements.txt
 
 ```
@@ -170,10 +174,12 @@ manufacturing-demand-forecast/
 - Normal distribution assumed for safety stock formula. Likely violated for erratic and lumpy segments
 - Syntetos-Boylan thresholds not tuned. Standard published values used, no dataset-specific optimization
 - Single global model across all warehouses. `Whse_J` dominates volume and may warrant its own model
-- No retraining cadence. Model trained once, January 2017 drift spike shows retraining is needed
+- Airflow DAG defines monthly retraining cadence but is not running on a live Airflow instance
 
 ### Production Limitations
 - No authentication on the live API endpoint, publicly accessible
 - Not load tested - single instance, suitable for portfolio traffic only
 - SQLite logging is local to the container, predictions are not persisted across Cloud Run restarts
 - Croston's forecasts are pre-computed offline. Not real-time inference
+- Airflow DAG defines monthly retraining cadence, not running on a live Airflow instance; DAG code demonstrates the pipeline pattern
+- Evaluation step uses held-out test set. In production, new incoming data would serve as the evaluation set
