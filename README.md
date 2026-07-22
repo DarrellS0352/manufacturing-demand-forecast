@@ -130,7 +130,6 @@ ROP = (mean_demand x L) + SS
 ![Monitoring Dashboard](images/dashboard.png)  
 *The January 2017 spike in both Rolling MAE and Mean Demand Lag confirms input drift as the cause of performance degradation - a retraining trigger in a production system.*
 
-
 ## Project Structure
 
 ```
