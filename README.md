@@ -174,6 +174,7 @@ manufacturing-demand-forecast/
 - Normal distribution assumed for safety stock formula. Likely violated for erratic and lumpy segments
 - Syntetos-Boylan thresholds not tuned. Standard published values used, no dataset-specific optimization
 - Single global model across all warehouses. `Whse_J` dominates volume and may warrant its own model
+- Airflow DAG defines monthly retraining cadence but is not running on a live Airflow instance
 
 ### Production Limitations
 - No authentication on the live API endpoint, publicly accessible
